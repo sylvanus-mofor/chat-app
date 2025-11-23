@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat App</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- Username Input Screen -->
+<div id="username-container" class="username-container">
+  <h1>SN Tech Live Chat</h1>
+  <h2>Enter your username</h2>
+  <input type="text" 
+         id="username-input" 
+         placeholder="Your name..." 
+         maxlength="20"
+         autocomplete="off"
+         class="username-input">
+  <button id="join-btn" class="join-btn">Join Chat</button>
+</div>
+
+<!-- Main Chat Container (Hidden initially) -->
+<div class="chat-container" id="chat-container" style="display: none;">
+  <!-- Sidebar for Online Users -->
+  <div class="sidebar">
+    <div id="online-users" class="online-users">
+      <h3>Online Users</h3>
+    </div>
+  </div>
+
+  <!-- Main Chat Area -->
+  <div class="main-chat">
+    <!-- Header -->
+    <h1 class="chat-header">SN Tech Live Chat</h1>
+
+    <!-- Messages Area -->
+    <div id="messages" class="messages-area"></div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <input type="text" 
+             id="message-input" 
+             placeholder="Type your message..." 
+             autocomplete="off"
+             class="message-input">
+      <button id="send-btn" class="send-btn">Send</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

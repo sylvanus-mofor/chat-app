@@ -1,0 +1,30 @@
+version: '3.8' # Using a modern version
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - "5000:5000" # Expose backend port (optional for this setup, but useful)
+    depends_on:
+      - redis
+    # The container name should match the service name for easy logging
+    container_name: chat-app-app
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    container_name: chat-app-frontend
+
+  # CRITICAL: Add the Redis service for Pub/Sub
+  redis:
+    image: redis:latest
+    container_name: chat-app-redis
+    expose:
+      - "6379" # Expose the internal Redis port to the Docker network
