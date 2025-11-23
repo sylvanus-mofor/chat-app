@@ -1,4 +1,4 @@
-version: '3.8' # Using a modern version
+version: '3.8'
 
 services:
   app:
@@ -9,7 +9,7 @@ services:
       - "5000:5000" # Expose backend port (optional for this setup, but useful)
     depends_on:
       - redis
-    # The container name should match the service name for easy logging
+    # Container name should match the service name for easy logging
     container_name: chat-app-app
 
   frontend:
@@ -22,7 +22,7 @@ services:
       - app
     container_name: chat-app-frontend
 
-  # CRITICAL: Add the Redis service for Pub/Sub
+  # Redis service for Pub/Sub
   redis:
     image: redis:latest
     container_name: chat-app-redis
