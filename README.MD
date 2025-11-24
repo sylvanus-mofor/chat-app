@@ -31,7 +31,7 @@ Static Files          WebSocket Server              Message Broker
 
 ```bash
 # Clone and start
-git clone git@github.com:sylvanus-mofor/chat-app.git
+git clone https://git@github.com:sylvanus-mofor/chat-app
 cd chat-app
 docker-compose up -d --build
 
