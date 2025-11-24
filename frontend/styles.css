@@ -52,7 +52,7 @@ body {
 }
 
 .username-input:focus {
-  border-color: #2563eb;
+  border-color: #237f7e;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -165,7 +165,7 @@ body {
 
 .message.sent {
   align-self: flex-end;
-  background: #2563eb;
+  background: #237f7e;
   color: white;
   border-bottom-right-radius: 4px;
 }
@@ -209,7 +209,7 @@ body {
 }
 
 .message-input:focus {
-  border-color: #2563eb;
+  border-color: #237f7e;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -247,7 +247,7 @@ body {
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar Styles */
 .messages-area::-webkit-scrollbar,
 .sidebar::-webkit-scrollbar {
   width: 5px;
@@ -273,7 +273,7 @@ body {
 @media (max-width: 768px) {
   .chat-container {
     width: 100vw;
-    height: 100vh;
+    height: 90vh;
     border-radius: 0;
   }
   
