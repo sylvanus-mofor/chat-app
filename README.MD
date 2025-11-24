@@ -47,12 +47,23 @@ http://localhost
 
 ```bash
 docker-compose down
+# Stop all running containers
 docker stop $(docker ps -aq)
+
+# Remove all containers
 docker rm $(docker ps -aq)
+
+# Remove all images
 docker rmi $(docker images -q)
+
+# Remove all networks (except default ones)
 docker network prune -f
+
+# Remove all volumes (if you want to delete data too)
 docker volume prune -f
-docker system prune -a --volumes -f
+
+# Remove all build cache
+docker builder prune -a -f
 ```
 
 ## Project Structure

@@ -7,6 +7,7 @@ const joinButton = document.getElementById("join-btn");
 const chatContainer = document.getElementById("chat-container");
 const usernameContainer = document.getElementById("username-container");
 const onlineUsersDiv = document.getElementById("online-users");
+const userCountEl = document.getElementById("user-count");
 
 let currentUsername = "";
 
@@ -27,7 +28,13 @@ function displayMessage(msg, type, username = null) {
 
 // Function to update online users list
 function updateOnlineUsers(users) {
-  onlineUsersDiv.innerHTML = "<h3>Online Users</h3>";
+  onlineUsersDiv.innerHTML = `
+    <h3>
+      Online Users
+      <span id="user-count" class="user-count">${users.length}</span>
+    </h3>
+  `;
+  
   users.forEach(user => {
     const userEl = document.createElement("div");
     userEl.classList.add("online-user");
