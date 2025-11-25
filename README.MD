@@ -33,6 +33,7 @@ Static Files          WebSocket Server              Message Broker
 # Clone and start
 git clone https://git@github.com:sylvanus-mofor/chat-app
 cd chat-app
+#Install and start docker. If installed on Windows desktop, start in the BG using "/c/Program Files/Docker/Docker/Docker Desktop.exe" &
 docker-compose up -d --build
 
 # Verify
