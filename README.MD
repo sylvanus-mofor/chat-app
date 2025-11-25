@@ -65,6 +65,8 @@ docker volume prune -f
 
 # Remove all build cache
 docker builder prune -a -f
+
+#Kill Docker backend processes on Windows by running taskkill //F //IM "Docker Desktop.exe"
 ```
 
 ## Project Structure
