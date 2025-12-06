@@ -10,6 +10,46 @@ const onlineUsersDiv = document.getElementById("online-users");
 const userCountEl = document.getElementById("user-count");
 
 let currentUsername = "";
+let typingUsers = new Set();
+let typingTimeout = null;
+let typingAnimationInterval = null;
+let dotCount = 1;
+
+// Function to update typing indicator
+function updateTypingIndicator() {
+  const typingIndicator = document.getElementById("typing-indicator");
+  
+  if (typingUsers.size > 0) {
+    const usersArray = Array.from(typingUsers);
+    let text = "";
+    
+    if (usersArray.length === 1) {
+      text = `${usersArray[0]} is typing`;
+    } else if (usersArray.length === 2) {
+      text = `${usersArray[0]} and ${usersArray[1]} are typing`;
+    } else {
+      text = `${usersArray.length} people are typing`;
+    }
+    
+    // Start animation if not already running
+    if (!typingAnimationInterval) {
+      typingAnimationInterval = setInterval(() => {
+        const dots = '.'.repeat(dotCount);
+        typingIndicator.textContent = text + dots;
+        dotCount = dotCount >= 5 ? 1 : dotCount + 1;
+      }, 400);
+    }
+    
+    typingIndicator.style.display = "block";
+  } else {
+    typingIndicator.style.display = "none";
+    if (typingAnimationInterval) {
+      clearInterval(typingAnimationInterval);
+      typingAnimationInterval = null;
+      dotCount = 1;
+    }
+  }
+}
 
 // Function to display messages with proper styling
 function displayMessage(msg, type, username = null, isSystem = false) {
@@ -91,8 +131,30 @@ function sendMessage() {
     displayMessage(message, "sent");
     messageInput.value = "";
     messageInput.focus();
+    
+    // Stop typing indicator when message is sent
+    socket.emit("typing", false);
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+      typingTimeout = null;
+    }
   }
 }
+
+// Handle typing indicator
+messageInput.addEventListener("input", () => {
+  socket.emit("typing", true);
+  
+  // Clear existing timeout
+  if (typingTimeout) {
+    clearTimeout(typingTimeout);
+  }
+  
+  // Set timeout to stop typing indicator after 2 seconds of inactivity
+  typingTimeout = setTimeout(() => {
+    socket.emit("typing", false);
+  }, 2000);
+});
 
 // Send button click event
 sendButton.addEventListener("click", sendMessage);
@@ -154,4 +216,14 @@ socket.on("user-joined", (data) => {
 socket.on("user-left", (data) => {
   displayMessage(`${data.username} left the chat`, "system", null, true);
   updateOnlineUsers(data.onlineUsers);
+});
+
+// Listen for typing events
+socket.on("user-typing", (data) => {
+  if (data.isTyping) {
+    typingUsers.add(data.username);
+  } else {
+    typingUsers.delete(data.username);
+  }
+  updateTypingIndicator();
 });

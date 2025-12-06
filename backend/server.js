@@ -197,6 +197,17 @@ io.on("connection", (socket) => {
         });
     });
     
+    // Listen for typing events
+    socket.on("typing", (isTyping) => {
+        const username = socket.username;
+        if (username) {
+            socket.broadcast.emit("user-typing", {
+                username: username,
+                isTyping: isTyping
+            });
+        }
+    });
+    
     // Listen for incoming messages from clients
     socket.on("chat-message", async (msg) => {
         const username = socket.username || "Anonymous";

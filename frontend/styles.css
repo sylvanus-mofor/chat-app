@@ -224,6 +224,18 @@ body {
   font-weight: 500;
 }
 
+/* Typing Indicator */
+.typing-indicator {
+  display: none;
+  padding: 12px 24px;
+  font-size: 14px;
+  color: #6b7280;
+  font-style: italic;
+  background: linear-gradient(180deg, #fafbff 0%, #f1f5f9 100%);
+  border-top: 1px solid #eef0f4;
+  animation: fadeIn 0.3s ease-out;
+}
+
 /* Input Area */
 .input-area {
   padding: 24px;
@@ -366,6 +378,11 @@ body {
     font-size: 14px;
   }
   
+  .typing-indicator {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+  
   .input-area {
     padding: 20px;
     gap: 12px;
@@ -414,6 +431,11 @@ body {
   
   .message {
     max-width: 92%;
+  }
+  
+  .typing-indicator {
+    padding: 8px 16px;
+    font-size: 12px;
   }
   
   .input-area {
