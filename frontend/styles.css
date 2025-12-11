@@ -464,3 +464,67 @@ body {
     font-size: 13px;
   }
 }
+
+/* Logout Button */
+.logout-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  z-index: 100;
+}
+
+.logout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+}
+
+/* Current user highlight in online users list */
+.online-user.current-user {
+  background: linear-gradient(135deg, rgba(35, 127, 126, 0.2) 0%, rgba(28, 102, 101, 0.1) 100%);
+  border: 1px solid rgba(35, 127, 126, 0.3);
+  font-weight: 600;
+}
+
+.you-badge {
+  background: linear-gradient(135deg, #237f7e 0%, #1c6665 100%);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* Responsive logout button */
+@media (max-width: 768px) {
+  .logout-btn {
+    top: 15px;
+    right: 15px;
+    padding: 6px 12px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logout-btn {
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}

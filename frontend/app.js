@@ -7,9 +7,9 @@ const joinButton = document.getElementById("join-btn");
 const chatContainer = document.getElementById("chat-container");
 const usernameContainer = document.getElementById("username-container");
 const onlineUsersDiv = document.getElementById("online-users");
-const userCountEl = document.getElementById("user-count");
 
 let currentUsername = "";
+let currentSessionToken = "";
 let typingUsers = new Set();
 let typingTimeout = null;
 let typingAnimationInterval = null;
@@ -74,20 +74,88 @@ function displayMessage(msg, type, username = null, isSystem = false) {
 
 // Function to update online users list
 function updateOnlineUsers(users) {
+  const userCount = users.length;
   onlineUsersDiv.innerHTML = `
     <h3>
       Online Users
-      <span id="user-count" class="user-count">${users.length}</span>
+      <span id="user-count" class="user-count">${userCount}</span>
     </h3>
   `;
+  
+  // Add logout button to the header
+  const chatHeader = document.querySelector('.chat-header');
+  if (!document.getElementById('logout-btn')) {
+    const logoutBtn = document.createElement('button');
+    logoutBtn.id = 'logout-btn';
+    logoutBtn.className = 'logout-btn';
+    logoutBtn.textContent = 'Logout';
+    logoutBtn.addEventListener('click', logout);
+    chatHeader.appendChild(logoutBtn);
+  }
   
   users.forEach(user => {
     const userEl = document.createElement("div");
     userEl.classList.add("online-user");
-    userEl.textContent = user;
+    
+    // Highlight current user
+    if (user === currentUsername) {
+      userEl.classList.add('current-user');
+      userEl.innerHTML = `${user} <span class="you-badge">(You)</span>`;
+    } else {
+      userEl.textContent = user;
+    }
+    
     onlineUsersDiv.appendChild(userEl);
   });
 }
+
+// Check for existing session on page load
+window.addEventListener('DOMContentLoaded', () => {
+  currentSessionToken = localStorage.getItem('chatSessionToken');
+  
+  if (currentSessionToken) {
+    // Show loading indicator
+    const joinBtn = document.getElementById('join-btn');
+    const originalText = joinBtn.textContent;
+    joinBtn.textContent = 'Restoring session...';
+    joinBtn.disabled = true;
+    
+    // Try to restore session
+    socket.emit("restore-session", currentSessionToken, (response) => {
+      if (response.success) {
+        currentUsername = response.username;
+        usernameContainer.style.display = "none";
+        chatContainer.style.display = "flex";
+        messageInput.focus();
+        
+        // Display chat history
+        response.messages.forEach(data => {
+          if (data.isSystem || data.senderId === 'system') {
+            displayMessage(data.message, "system", null, true);
+          } else if (data.username === currentUsername) {
+            displayMessage(data.message, "sent");
+          } else {
+            displayMessage(data.message, "received", data.username);
+          }
+        });
+        
+        // Update online users
+        updateOnlineUsers(response.onlineUsers);
+        
+        console.log('Session restored successfully');
+      } else {
+        // Invalid session, clear it
+        localStorage.removeItem('chatSessionToken');
+        currentSessionToken = "";
+        alert('Your session has expired. Please log in again.');
+      }
+      
+      // Restore button state
+      joinBtn.textContent = originalText;
+      joinBtn.disabled = false;
+    });
+  }
+});
 
 // Join chat with username
 function joinChat() {
@@ -100,11 +168,33 @@ function joinChat() {
   // Check if username is available
   socket.emit("check-username", username, (response) => {
     if (response.available) {
-      currentUsername = username;
-      socket.emit("join", username);
-      usernameContainer.style.display = "none";
-      chatContainer.style.display = "flex";
-      messageInput.focus();
+      socket.emit("join", username, (joinResponse) => {
+        if (joinResponse.success) {
+          currentUsername = username;
+          currentSessionToken = joinResponse.sessionToken;
+          
+          // Store session token in localStorage
+          localStorage.setItem('chatSessionToken', currentSessionToken);
+          
+          usernameContainer.style.display = "none";
+          chatContainer.style.display = "flex";
+          messageInput.focus();
+          
+          // Display chat history
+          joinResponse.messages.forEach(data => {
+            if (data.isSystem || data.senderId === 'system') {
+              displayMessage(data.message, "system", null, true);
+            } else if (data.username === currentUsername) {
+              displayMessage(data.message, "sent");
+            } else {
+              displayMessage(data.message, "received", data.username);
+            }
+          });
+          
+          // Update online users
+          updateOnlineUsers(joinResponse.onlineUsers);
+        }
+      });
     } else {
       alert(`Username "${username}" is already taken. Please choose another one.`);
       usernameInput.value = "";
@@ -112,6 +202,45 @@ function joinChat() {
     }
   });
 }
+
+// Logout function
+function logout() {
+  if (confirm('Are you sure you want to logout?')) {
+    if (currentSessionToken) {
+      socket.emit("logout", currentSessionToken);
+    }
+    
+    // Clear local storage
+    localStorage.removeItem('chatSessionToken');
+    currentSessionToken = "";
+    currentUsername = "";
+    
+    // Reset UI
+    chatContainer.style.display = "none";
+    usernameContainer.style.display = "block";
+    usernameInput.value = "";
+    usernameInput.focus();
+    messagesDiv.innerHTML = "";
+    onlineUsersDiv.innerHTML = '<h3>Online Users</h3>';
+    
+    // Remove logout button
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.remove();
+    }
+    
+    // Disconnect and reconnect socket to clear server state
+    socket.disconnect();
+    socket.connect();
+    
+    console.log('User logged out successfully');
+  }
+}
+
+// Listen for logout success from server
+socket.on("logout-success", () => {
+  console.log('Server confirmed logout');
+});
 
 // Join button click event
 joinButton.addEventListener("click", joinChat);
@@ -143,17 +272,19 @@ function sendMessage() {
 
 // Handle typing indicator
 messageInput.addEventListener("input", () => {
-  socket.emit("typing", true);
-  
-  // Clear existing timeout
-  if (typingTimeout) {
-    clearTimeout(typingTimeout);
+  if (currentUsername) {
+    socket.emit("typing", true);
+    
+    // Clear existing timeout
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    
+    // Set timeout to stop typing indicator after 2 seconds of inactivity
+    typingTimeout = setTimeout(() => {
+      socket.emit("typing", false);
+    }, 2000);
   }
-  
-  // Set timeout to stop typing indicator after 2 seconds of inactivity
-  typingTimeout = setTimeout(() => {
-    socket.emit("typing", false);
-  }, 2000);
 });
 
 // Send button click event
@@ -226,4 +357,10 @@ socket.on("user-typing", (data) => {
     typingUsers.delete(data.username);
   }
   updateTypingIndicator();
+});
+
+// Handle page unload
+window.addEventListener('beforeunload', () => {
+  // We keep the session token in localStorage
+  // It will expire on server after inactivity
 });
