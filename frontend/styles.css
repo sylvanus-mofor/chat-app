@@ -470,7 +470,7 @@ body {
 .logout-btn {
   position: absolute;
   top: 20px;
-  right: 100px;
+  right: 10px;
   padding: 8px 16px;
   background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
   color: white;
@@ -495,7 +495,7 @@ body {
 
 /* Current user highlight in online users list */
 .online-user.current-user {
-  background: linear-gradient(135deg, rgba(35, 127, 126, 0.2) 0%, rgba(28, 102, 101, 0.1) 100%);
+  background: #f5faf5;
   border: 1px solid rgba(35, 127, 126, 0.3);
   font-weight: 600;
 }
@@ -514,7 +514,7 @@ body {
 @media (max-width: 768px) {
   .logout-btn {
     top: 15px;
-    right: 15px;
+    right: 40px;
     padding: 6px 12px;
     font-size: 13px;
     border-radius: 10px;
@@ -524,7 +524,7 @@ body {
 @media (max-width: 480px) {
   .logout-btn {
     top: 10px;
-    right: 10px;
+    right: 40px;
     padding: 5px 10px;
     font-size: 12px;
   }
