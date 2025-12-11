@@ -128,7 +128,7 @@ body {
   background: #158246;
   color: white;
   padding: 6px 12px;
-  border-radius: 16px;
+  border-radius: 25px;
   font-size: 14px;
   font-weight: 700;
   min-width: 32px;
@@ -381,7 +381,7 @@ body {
   
   .typing-indicator {
     padding: 10px 20px;
-    font-size: 13px;
+    font-size: 12px;
   }
   
   .input-area {
@@ -436,7 +436,7 @@ body {
   
   .typing-indicator {
     padding: 8px 16px;
-    font-size: 12px;
+    font-size: 10px;
   }
   
   .input-area {
@@ -501,7 +501,7 @@ body {
 }
 
 .you-badge {
-  background: linear-gradient(135deg, #237f7e 0%, #1c6665 100%);
+  background: #237f7e;
   color: white;
   padding: 2px 8px;
   border-radius: 10px;
@@ -513,7 +513,7 @@ body {
 /* Responsive logout button */
 @media (max-width: 768px) {
   .logout-btn {
-    top: 15px;
+    top: 20px;
     right: 80px;
     padding: 6px 12px;
     font-size: 13px;
@@ -523,7 +523,7 @@ body {
 
 @media (max-width: 480px) {
   .logout-btn {
-    top: 10px;
+    top: 15px;
     right: 80px;
     padding: 5px 10px;
     font-size: 12px;
